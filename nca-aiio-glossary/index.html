@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NCA-AIIO — глоссарий</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme: light;
+    --paper:#E8EDF1;
+    --card:#FFFFFF;
+    --ink:#16202B;
+    --muted:#5E707F;
+    --rule:#C6D0D8;
+    --mark:#2F5E8C;
+    --reveal:#8A5A1F;
+    --known:#3E7A5E;
+    box-sizing:border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --paper:#131A20;
+      --card:#1D262E;
+      --ink:#DCE4EA;
+      --muted:#8EA0AE;
+      --rule:#33414D;
+      --mark:#7FAAD4;
+      --reveal:#D8A866;
+      --known:#6FB391;
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --paper:#131A20;
+    --card:#1D262E;
+    --ink:#DCE4EA;
+    --muted:#8EA0AE;
+    --rule:#33414D;
+    --mark:#7FAAD4;
+    --reveal:#D8A866;
+    --known:#6FB391;
+  }
+  *,*::before,*::after{box-sizing:inherit}
+  html{scroll-padding-top: env(safe-area-inset-top, 0px)}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"IBM Plex Serif", Georgia, "Times New Roman", serif;
+    font-size:17px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:28px 20px 56px}
+
+  header{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+  h1{
+    font-family:"IBM Plex Sans", system-ui, sans-serif;
+    font-weight:600;font-size:19px;letter-spacing:-.01em;margin:0;
+  }
+  .sub{font-size:14px;color:var(--muted);font-style:italic}
+  .langbtn{
+    margin-left:auto;
+    font-family:"IBM Plex Sans", system-ui, sans-serif;
+    font-size:13px;font-weight:600;letter-spacing:.02em;
+    background:var(--card);color:var(--mark);
+    border:1px solid var(--mark);border-radius:3px;
+    padding:4px 10px;cursor:pointer;
+  }
+  .langbtn:hover{background:var(--mark);color:var(--card)}
+
+  .filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+  .chip{
+    font-family:"IBM Plex Sans", system-ui, sans-serif;
+    font-size:13px;font-weight:500;
+    background:transparent;color:var(--muted);
+    border:1px solid var(--rule);border-radius:3px;
+    padding:4px 9px;cursor:pointer;
+    transition:border-color .15s, color .15s;
+  }
+  .chip:hover{color:var(--ink);border-color:var(--mark)}
+  .chip[aria-pressed="true"]{color:var(--card);background:var(--mark);border-color:var(--mark)}
+  .chip:focus-visible,.btn:focus-visible,.card:focus-visible,.langbtn:focus-visible{outline:2px solid var(--mark);outline-offset:2px}
+
+  .meter{
+    display:flex;align-items:center;gap:10px;
+    font-family:"IBM Plex Sans", system-ui, sans-serif;
+    font-size:13px;color:var(--muted);
+    border-top:1px solid var(--rule);
+    padding-top:10px;margin:14px 0 18px;
+  }
+  .bar{flex:1;height:2px;background:var(--rule);position:relative}
+  .bar i{position:absolute;inset:0 auto 0 0;background:var(--mark);transition:width .25s}
+
+  .stage{perspective:1400px}
+  .card{
+    position:relative;width:100%;min-height:290px;
+    background:none;border:0;padding:0;margin:0;
+    text-align:left;cursor:pointer;color:inherit;font:inherit;
+    transform-style:preserve-3d;
+    transition:transform .45s cubic-bezier(.22,.7,.3,1);
+  }
+  .card.flipped{transform:rotateY(180deg)}
+  .face{
+    position:absolute;inset:0;
+    -webkit-backface-visibility:hidden;backface-visibility:hidden;
+    background:var(--card);
+    border:1px solid var(--rule);
+    border-radius:4px;
+    padding:26px 26px 54px;
+    display:flex;flex-direction:column;
+    overflow:auto;
+  }
+  .back{transform:rotateY(180deg)}
+
+  .sect{
+    font-family:"IBM Plex Sans", system-ui, sans-serif;
+    font-size:12px;font-weight:500;color:var(--mark);
+    margin-bottom:auto;
+  }
+  .term{
+    font-family:"IBM Plex Sans", system-ui, sans-serif;
+    font-weight:600;font-size:clamp(28px,7vw,42px);
+    letter-spacing:-.02em;line-height:1.1;
+    margin:20px 0;
+  }
+  .hint{font-size:14px;color:var(--muted);font-style:italic;margin-top:auto}
+
+  .expand{
+    font-family:"IBM Plex Sans", system-ui, sans-serif;
+    font-size:15px;font-weight:500;color:var(--reveal);
+    line-height:1.4;margin:0 0 14px;
+  }
+  .body{font-size:16.5px;margin:0;max-width:56ch}
+  .backterm{
+    font-family:"IBM Plex Sans", system-ui, sans-serif;
+    font-size:13px;font-weight:600;color:var(--muted);
+    margin-bottom:auto;
+  }
+
+  .controls{display:flex;align-items:center;gap:8px;margin-top:16px;flex-wrap:wrap}
+  .btn{
+    font-family:"IBM Plex Sans", system-ui, sans-serif;
+    font-size:14px;font-weight:500;
+    background:var(--card);color:var(--ink);
+    border:1px solid var(--rule);border-radius:3px;
+    padding:7px 13px;cursor:pointer;
+    transition:border-color .15s;
+  }
+  .btn:hover{border-color:var(--mark)}
+  .btn.on{color:var(--known);border-color:var(--known)}
+  .spacer{flex:1}
+  .count{font-family:"IBM Plex Sans", system-ui, sans-serif;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+  .keys{
+    font-size:13.5px;color:var(--muted);
+    border-top:1px solid var(--rule);
+    margin-top:26px;padding-top:12px;
+  }
+  kbd{
+    font-family:"IBM Plex Sans", system-ui, sans-serif;
+    font-size:12px;border:1px solid var(--rule);border-radius:3px;
+    padding:1px 5px;color:var(--ink);
+  }
+  .empty{
+    background:var(--card);border:1px solid var(--rule);border-radius:4px;
+    padding:26px;min-height:290px;display:flex;align-items:center;
+    color:var(--muted);font-style:italic;
+  }
+
+  .seek{display:flex;gap:8px;margin-bottom:10px}
+  .seek input{
+    flex:1;min-width:0;
+    font-family:"IBM Plex Sans", system-ui, sans-serif;
+    font-size:15px;color:var(--ink);background:var(--card);
+    border:1px solid var(--rule);border-radius:3px;
+    padding:8px 11px;
+  }
+  .seek input::placeholder{color:var(--muted)}
+  .seek input:focus{outline:2px solid var(--mark);outline-offset:-1px;border-color:var(--mark)}
+
+  .index{
+    background:var(--card);border:1px solid var(--rule);border-radius:4px;
+    padding:20px 22px;margin-top:2px;
+  }
+  .index h2{
+    font-family:"IBM Plex Sans", system-ui, sans-serif;
+    font-size:13px;font-weight:600;color:var(--mark);
+    margin:18px 0 8px;
+  }
+  .index h2:first-child{margin-top:0}
+  .index ul{list-style:none;margin:0;padding:0;columns:2;column-gap:28px}
+  @media (max-width:520px){.index ul{columns:1}}
+  .index li{break-inside:avoid;margin:0 0 3px}
+  .index button{
+    background:none;border:0;padding:2px 0;cursor:pointer;
+    font-family:"IBM Plex Sans", system-ui, sans-serif;
+    font-size:14.5px;color:var(--ink);text-align:left;
+    border-bottom:1px solid transparent;
+  }
+  .index button:hover{border-bottom-color:var(--mark);color:var(--mark)}
+  .index button:focus-visible{outline:2px solid var(--mark);outline-offset:2px}
+  .index button.done{color:var(--known)}
+  .index .tag{color:var(--muted);font-size:12.5px;font-style:italic}
+  @media (prefers-reduced-motion: reduce){
+    .card{transition:none}
+    .bar i{transition:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1 id="h1">NCA-AIIO — глоссарий</h1>
+    <span class="sub" id="tagline">нажми на карточку, чтобы перевернуть</span>
+    <button class="langbtn" id="lang" type="button">EN</button>
+  </header>
+
+  <div class="seek">
+    <input id="search" type="search" autocomplete="off">
+    <button class="btn" id="toggleIndex" type="button" aria-pressed="false">указатель</button>
+  </div>
+
+  <p class="sub" id="fuzzyNote" hidden style="margin:-4px 0 10px"></p>
+
+  <div class="filters" id="filters"></div>
+
+  <div class="meter">
+    <span id="progress"></span>
+    <span class="bar"><i id="barfill" style="width:0%"></i></span>
+    <button class="chip" id="reset" type="button">сбросить</button>
+  </div>
+
+  <div class="stage">
+    <button class="card" id="card" type="button" aria-live="polite">
+      <span class="face front">
+        <span class="sect" id="sect"></span>
+        <span class="term" id="term"></span>
+        <span class="hint" id="hint"></span>
+      </span>
+      <span class="face back">
+        <span class="backterm" id="backterm"></span>
+        <span class="expand" id="expand"></span>
+        <span class="body" id="body"></span>
+      </span>
+    </button>
+    <div class="empty" id="empty" hidden></div>
+  </div>
+
+  <div class="index" id="index" hidden></div>
+
+  <div class="controls">
+    <button class="btn" id="prev" type="button"></button>
+    <button class="btn" id="next" type="button"></button>
+    <button class="btn" id="know" type="button"></button>
+    <span class="spacer"></span>
+    <span class="count" id="count"></span>
+    <button class="btn" id="random" type="button"></button>
+    <button class="btn" id="shuffle" type="button"></button>
+  </div>
+
+  <p class="keys" id="keys"></p>
+</div>
+
+<script>
+/* s  — раздел (ключ), t — термин, te — термин по-английски (если отличается)
+   e  — расшифровка RU, ee — расшифровка EN
+   d  — описание RU,    de — описание EN                                   */
+const DATA = [
+/* --- Вычисления --- */
+{s:"Вычисления",t:"CUDA",e:"Compute Unified Device Architecture",ee:"Compute Unified Device Architecture",d:"Платформа NVIDIA для вычислений на GPU. Включает компилятор, рантайм и библиотеки (cuBLAS, cuDNN, cuFFT). Сторонние фреймворки — PyTorch, TensorFlow — в неё не входят, они лежат поверх. Работает только на картах NVIDIA.",de:"NVIDIA's platform for computing on GPUs. Includes the compiler, runtime and libraries (cuBLAS, cuDNN, cuFFT). Third-party frameworks — PyTorch, TensorFlow — are not part of it; they sit on top. Works only on NVIDIA cards."},
+{s:"Вычисления",t:"HBM",e:"High Bandwidth Memory",ee:"High Bandwidth Memory",d:"Память GPU: стопка кристаллов на подложке рядом с чипом. Тысячи ГБ/с против 300–500 у обычной DDR, но объём мал (80–192 ГБ) и не расширяется. Модель должна поместиться именно сюда.",de:"GPU memory: a stack of dies on a substrate beside the chip. Thousands of GB/s against 300–500 for ordinary DDR, but capacity is small (80–192 GB) and fixed. The model has to fit in here."},
+{s:"Вычисления",t:"FLOPS",e:"Floating Point Operations Per Second",ee:"Floating Point Operations Per Second",d:"Операции с плавающей запятой в секунду. Без указания точности цифра бессмысленна: в FP8 их вдвое больше, чем в FP16, при том же железе.",de:"Floating point operations per second. Meaningless without stating precision: FP8 gives twice the figure of FP16 on identical hardware."},
+{s:"Вычисления",t:"FP32 / FP16 / FP8 / FP4",e:"Floating Point — бит на число",ee:"Floating Point — bits per number",d:"4 / 2 / 1 / 0,5 байта соответственно. Короче формат — быстрее счёт и меньше данных возить. Нейросети терпят огрубление, потому что веса найдены подбором и информация распределена по миллиардам параметров.",de:"4 / 2 / 1 / 0.5 bytes respectively. A shorter format means faster arithmetic and less data to move. Networks tolerate the coarsening because weights are found by search and information is spread across billions of parameters."},
+{s:"Вычисления",t:"PCIe",e:"Peripheral Component Interconnect Express",ee:"Peripheral Component Interconnect Express",d:"Шина подключения карт к процессору. PCIe 5.0 x16 — около 64 ГБ/с. На порядок уже, чем NVLink и память GPU, поэтому становится узким местом. Ради обхода и придуманы NVLink и связка Grace с GPU.",de:"The bus connecting cards to the CPU. PCIe 5.0 x16 is about 64 GB/s — an order of magnitude narrower than NVLink or GPU memory, so it becomes the bottleneck. NVLink and the Grace-GPU pairing exist to route around it."},
+{s:"Вычисления",t:"SXM",e:"форм-фактор GPU-модуля NVIDIA",ee:"NVIDIA GPU module form factor",d:"Не карта в слот, а модуль на плате-носителе (baseboard). Даёт NVLink между картами, питание до 700 Вт и выше, общий контур охлаждения. Замена требует разбора узла. В DGX и HGX стоит именно SXM.",de:"Not a card in a slot but a module bolted to a baseboard. Gives NVLink between cards, 700 W and beyond, a shared cooling loop. Replacement means taking the node apart. DGX and HGX use SXM."},
+{s:"Вычисления",t:"MXM",e:"Mobile PCI Express Module",ee:"Mobile PCI Express Module",d:"Компактный модульный форм-фактор для встраиваемых и мобильных систем. В курсе упоминается рядом с SXM как второй пример модульного исполнения, дальше не разбирается.",de:"A compact modular form factor for embedded and mobile systems. The course names it beside SXM as a second example of modular packaging and goes no further."},
+{s:"Вычисления",t:"Tensor cores",e:"блоки матричных операций",ee:"matrix math units",d:"Перемножают небольшие матрицы за такт, в отличие от CUDA-ядра, которое умножает два числа. Появились в Volta (V100) — с них начался отрыв GPU на AI-задачах. Каждое поколение добавляет более короткий формат чисел.",de:"They multiply small matrices per clock, unlike a CUDA core which multiplies two numbers. Introduced in Volta (V100) — the start of the GPU's lead on AI work. Each generation adds a shorter number format."},
+{s:"Вычисления",t:"CUDA cores",e:"универсальные вычислительные ядра GPU",ee:"general-purpose GPU cores",d:"Тысячи простых ядер против десятков сложных у CPU. Названы по имени платформы. Само их число мало о чём говорит: прирост последних поколений идёт от tensor cores и коротких форматов.",de:"Thousands of simple cores against dozens of complex ones on a CPU. Named after the platform. The count alone says little: recent gains come from tensor cores and shorter formats."},
+{s:"Вычисления",t:"RT cores",e:"Ray Tracing cores",ee:"Ray Tracing cores",d:"Блоки трассировки лучей. Есть в RTX, нет в дата-центровых H100 и B200 — те только считают, графического конвейера у них нет.",de:"Ray tracing units. Present in RTX, absent from the data-centre H100 and B200 — those only compute and have no graphics pipeline."},
+{s:"Вычисления",t:"CUDA MPS",e:"Multi-Process Service",ee:"Multi-Process Service",d:"Процессы отдают ядра посреднику, и карта выполняет их одновременно, а не по очереди. Изоляции нет совсем — только для одного доверенного хозяина. Признаки в вопросе: trusted user, no isolation required, low overhead, concurrent.",de:"Processes hand their kernels to a broker and the card runs them concurrently instead of in turns. No isolation whatsoever — for a single trusted owner only. Tells in a question: trusted user, no isolation required, low overhead, concurrent."},
+{s:"Вычисления",t:"четыре способа делить GPU",te:"four ways to share a GPU",e:"MPS, time-slicing, MIG, vGPU",ee:"MPS, time-slicing, MIG, vGPU",d:"MPS — софт, без изоляции, ядра вперемежку. Time-slicing — по очереди, без гарантий. MIG — железо, полная изоляция, до 7 частей, для разных арендаторов. vGPU — гипервизор, память жёстко, ядра по времени, для виртуальных машин.",de:"MPS — software, no isolation, kernels interleaved. Time-slicing — in turns, no guarantees. MIG — hardware, full isolation, up to 7 slices, for separate tenants. vGPU — hypervisor, memory partitioned hard, cores by time slice, for virtual machines."},
+{s:"Вычисления",t:"MIG",e:"Multi-Instance GPU",ee:"Multi-Instance GPU",d:"Аппаратное деление карты на изолированные экземпляры — свои ядра, память и канал к ней. До семи частей. Есть в A100 и новее, гипервизор не нужен.",de:"Hardware partitioning of a card into isolated instances — their own cores, memory and memory path. Up to seven. Available on A100 and newer; no hypervisor required."},
+{s:"Вычисления",t:"vGPU",e:"virtual GPU",ee:"virtual GPU",d:"Программное деление карты между виртуальными машинами через драйвер на гипервизоре. Память делится жёстко, ядра по времени. Изначально под виртуальные рабочие места, не под обучение.",de:"Software partitioning between virtual machines through a hypervisor driver. Memory is split hard, cores by time slice. Built for virtual desktops, not for training."},
+{s:"Вычисления",t:"DPU",e:"Data Processing Unit",ee:"Data Processing Unit",d:"Третий тип процессора рядом с CPU и GPU. Сетевая карта с собственными ARM-ядрами и ОС. Забирает инфраструктурные задачи: сеть, хранилище, шифрование, изоляцию. Ключевое слово — offload. У NVIDIA линейка BlueField.",de:"A third processor type alongside CPU and GPU. A network card with its own ARM cores and operating system. It takes over infrastructure work: networking, storage, encryption, isolation. The key word is offload. NVIDIA's line is BlueField."},
+{s:"Вычисления",t:"ASIC",e:"Application-Specific Integrated Circuit",ee:"Application-Specific Integrated Circuit",d:"Чип под одну задачу, больше ничего не умеет. Быстрее универсального железа в разы, но схема вытравлена и не меняется. Пример в AI — TPU у Google. GPU выиграл потому, что архитектуры моделей менялись слишком быстро.",de:"A chip for one task and nothing else. Many times faster than general hardware, but the circuit is etched and cannot change. In AI the example is Google's TPU. The GPU won because model architectures kept changing too fast."},
+{s:"Вычисления",t:"NUMA",e:"Non-Uniform Memory Access",ee:"Non-Uniform Memory Access",d:"В двухпроцессорном сервере у каждого CPU своя память и свои линии PCIe, а значит и свои GPU. Процесс на чужой ноде гоняет данные через межпроцессорную шину — потери до десятков процентов. Лечится привязкой (affinity, pinning); топологию показывает nvidia-smi topo -m. В Grace Hopper исчезает: общее адресное пространство через NVLink-C2C.",de:"In a two-socket server each CPU has its own memory and its own PCIe lanes, and therefore its own GPUs. A process on the wrong node pushes data across the inter-socket link — losses of tens of percent. Fixed by affinity or pinning; nvidia-smi topo -m shows the topology. It disappears on Grace Hopper: one address space over NVLink-C2C."},
+{s:"Вычисления",t:"die",e:"кристалл",ee:"silicon die",d:"Пластина кремния с вытравленной микросхемой. Площадь ограничена, и всё размещённое конкурирует за место: у GPU большая доля отдана арифметике, у CPU — управляющей логике и кэшам. Отсюда разница в performance per watt.",de:"A slice of silicon with the circuit etched into it. Area is limited and everything on it competes for space: a GPU gives a large share to arithmetic, a CPU to control logic and caches. Hence the gap in performance per watt."},
+{s:"Вычисления",t:"NVLink",e:"прямая связь GPU внутри сервера",ee:"direct GPU-to-GPU link inside a server",d:"Карты соединены напрямую, минуя PCIe. Около 900 ГБ/с на карту против 64 у PCIe 5.0. Позволяет разложить модель по нескольким картам и работать с ними как с одной.",de:"Cards wired to each other directly, bypassing PCIe. Around 900 GB/s per card against 64 for PCIe 5.0. It lets a model be spread over several cards and worked as one."},
+{s:"Вычисления",t:"NVSwitch",e:"коммутатор NVLink внутри сервера",ee:"NVLink switch inside a server",d:"Когда карт восемь и больше, прямых линий на всех не хватает. NVSwitch даёт любой карте доступ к любой другой на полной скорости за один переход.",de:"With eight cards or more there are not enough direct links for every pair. NVSwitch gives any card full-speed access to any other in a single hop."},
+{s:"Вычисления",t:"NVLink-C2C",e:"chip-to-chip",ee:"chip-to-chip",d:"Связь между кристаллами внутри суперчипа — Grace с Hopper или Blackwell. Убирает PCIe из связки процессора и GPU и даёт общее адресное пространство.",de:"The link between dies inside a superchip — Grace with Hopper or Blackwell. It removes PCIe from the CPU-GPU pairing and gives them one address space."},
+{s:"Вычисления",t:"performance per watt",e:"работа на ватт",ee:"work per watt",d:"Метрика энергоэффективности вычислений. В дата-центре ограничение не в количестве железа, а в подведённой мощности. У GPU выше, но только на параллельных задачах — на последовательных с ветвлениями она проигрывает CPU.",de:"The energy-efficiency metric for compute. In a data centre the limit is not how much hardware fits but how much power is supplied. Higher on GPUs, but only for parallel work — on branching sequential code they lose to the CPU."},
+{s:"Вычисления",t:"memory-bound / compute-bound",e:"что ограничивает задачу",ee:"what limits the job",d:"Memory-bound — ядра простаивают в ожидании данных, перевозка дороже вычисления. Compute-bound — данных мало, счёта много, ядра загружены. На memory-bound нагрузке паспортные FLOPS не достигаются.",de:"Memory-bound — cores idle waiting for data, and moving it costs more than computing on it. Compute-bound — little data, much arithmetic, cores busy. On memory-bound work the datasheet FLOPS are never reached."},
+{s:"Вычисления",t:"Transformer Engine",e:"FP8 в обучении, с Hopper",ee:"FP8 in training, since Hopper",d:"Следит за диапазоном значений в каждом тензоре и подбирает множитель (dynamic scaling), чтобы числа попали в окно FP8 и не обнулились. Матричные операции идут в FP8, накопление и оптимизатор остаются длинными. Выигрыш в скорости прямой, в памяти частичный.",de:"It watches the value range in each tensor and picks a scale factor (dynamic scaling) so numbers land inside FP8's window instead of flushing to zero. Matrix operations run in FP8 while accumulation and the optimiser stay long. The speed gain is direct, the memory gain partial."},
+{s:"Вычисления",t:"TF32",e:"TensorFloat-32",ee:"TensorFloat-32",d:"Экспонента от FP32 (8 бит, тот же диапазон), мантисса от FP16 (10 бит). Лежит в 32-битном контейнере, поэтому код не меняется — карта сама использует его при матричных операциях. Появился в Ampere.",de:"The exponent from FP32 (8 bits, same range), the mantissa from FP16 (10 bits). It sits in a 32-bit container, so the code does not change — the card uses it for matrix operations on its own. Introduced in Ampere."},
+{s:"Вычисления",t:"экспонента и мантисса",te:"exponent and mantissa",e:"две части числа",ee:"the two parts of a number",d:"Экспонента задаёт порядок величины — это диапазон. Мантисса — значащие цифры, это точность. FP32: 8+23. FP16: 5+10. BF16: 8+7. TF32: 8+10. Принцип: потерю точности нейросети переживают, потеря диапазона ломает обучение.",de:"The exponent sets the order of magnitude — that is range. The mantissa holds the significant digits — that is precision. FP32: 8+23. FP16: 5+10. BF16: 8+7. TF32: 8+10. The principle: networks survive lost precision, lost range breaks training."},
+{s:"Вычисления",t:"INT8 / INT4",e:"целочисленные форматы",ee:"integer formats",d:"Не плавающая запятая, а обычные целые: у INT8 всего 256 значений с равномерным шагом. Веса растягивают на эту сетку через множитель. Годится для inference, не для обучения — мелкие градиенты обнуляются. Поддержан железом с Turing (2018), поэтому встречается чаще FP8.",de:"Not floating point but plain integers: INT8 has just 256 values at a uniform step. Weights are stretched onto that grid with a scale factor. Fine for inference, not for training — small gradients flush to zero. Supported in hardware since Turing (2018), so it shows up more often than FP8."},
+{s:"Вычисления",t:"calibration",e:"подбор масштаба при квантизации",ee:"setting the scale for quantisation",d:"По выборке реальных данных определяют, в каком диапазоне лежат значения, и подбирают множитель для целочисленной сетки. Без калибровки масштаб берётся наугад и точность падает заметно.",de:"A sample of real data shows what range the values occupy, and the scale factor for the integer grid is set from it. Without calibration the scale is a guess and accuracy drops noticeably."},
+
+/* --- Продукты --- */
+{s:"Продукты",t:"DGX",e:"готовая AI-система от NVIDIA",ee:"a complete AI system from NVIDIA",d:"Чей продукт, а не что внутри. Раньше сервер на восемь GPU в 8U, в новых поколениях — стойка целиком. Расшифровка официально не публикуется.",de:"Whose product it is, not what is inside. Once an eight-GPU server in 8U, in newer generations a whole rack. The acronym is not officially expanded."},
+{s:"Продукты",t:"HGX",e:"плата с GPU для сторонних производителей",ee:"GPU baseboard for third-party builders",d:"NVIDIA продаёт модуль, Dell, HPE, Supermicro и Lenovo строят вокруг него свои серверы. Мнемоника: D — от NVIDIA целиком, H — внутрь чужого сервера.",de:"NVIDIA sells the module; Dell, HPE, Supermicro and Lenovo build their own servers around it. Mnemonic: D is NVIDIA's whole machine, H goes inside someone else's."},
+{s:"Продукты",t:"DGX vs GB vs NVL",e:"три разных признака в названии",ee:"three separate facts in one name",d:"DGX — чей продукт (NVIDIA, а не партнёр). GB — что внутри (Grace плюс Blackwell). NVL72 — сколько GPU связано NVLink. Складываются: DGX GB200 NVL72. Та же конфигурация от Dell или Supermicro — уже не DGX.",de:"DGX — whose product it is (NVIDIA, not a partner). GB — what is inside (Grace plus Blackwell). NVL72 — how many GPUs share an NVLink domain. They stack: DGX GB200 NVL72. The same configuration from Dell or Supermicro is not a DGX."},
+{s:"Продукты",t:"GB200 / GB300",e:"суперчипы Grace + Blackwell",ee:"Grace + Blackwell superchips",d:"Три кристалла на одной плате: Grace и два B200, связанные NVLink-C2C. Больше чипа, меньше компьютера — ставится в сервер как единый модуль. GB300 это Blackwell Ultra: больше HBM, около 1400 Вт на GPU.",de:"Three dies on one board: Grace and two B200, linked by NVLink-C2C. More than a chip, less than a computer — fitted into a server as a single module. GB300 is Blackwell Ultra: more HBM, around 1400 W per GPU."},
+{s:"Продукты",t:"GH200",e:"Grace Hopper Superchip",ee:"Grace Hopper Superchip",d:"Предыдущее поколение связки: один Grace плюс один GPU Hopper. Grace и Hopper по отдельности — разные вещи, вместе — один продукт.",de:"The previous generation pairing: one Grace plus one Hopper GPU. Grace and Hopper separately are different things; together they are one product."},
+{s:"Продукты",t:"NVL72",e:"72 GPU в одном NVLink-домене",ee:"72 GPUs in one NVLink domain",d:"Стойка как единая машина: 18 вычислительных лотков, 9 коммутационных, связь через backplane. Полторы тонны, 120–140 кВт, только жидкостное охлаждение. NVL — от NVLink, число — сколько карт связано.",de:"A rack as a single machine: 18 compute trays, 9 switch trays, joined through a backplane. Around 1.5 tonnes, 120–140 kW, liquid cooling only. NVL is from NVLink; the number is how many cards are joined."},
+{s:"Продукты",t:"BasePOD",e:"малый эталонный кластер",ee:"small reference cluster",d:"2–8 узлов DGX плюс сеть, хранилище и софт управления. Точка входа для компании, которой нужен AI-кластер не масштаба гиперскейлера.",de:"2–8 DGX nodes plus networking, storage and management software. The entry point for a company that needs an AI cluster but not at hyperscaler scale."},
+{s:"Продукты",t:"SuperPOD",e:"крупный эталонный кластер",ee:"large reference cluster",d:"От 32 узлов и выше. Полная спецификация: топология InfiniBand, параллельное хранилище, планировщик, питание и охлаждение. Та же логика, что DGX на уровне сервера — не проектировать с нуля.",de:"From 32 nodes upward. A full specification: InfiniBand topology, parallel storage, scheduler, power and cooling. The same logic as DGX at the server level — do not design from scratch."},
+{s:"Продукты",t:"BlueField",e:"линейка DPU у NVIDIA",ee:"NVIDIA's DPU line",d:"Досталась от Mellanox вместе с InfiniBand. Поколения BlueField-2, -3. В DGX стоит штатно, но основной сценарий — обычные серверы у облачных провайдеров.",de:"Inherited from Mellanox along with InfiniBand. Generations BlueField-2 and -3. Standard in DGX, but the main use is ordinary servers at cloud providers."},
+{s:"Продукты",t:"ConnectX",e:"линейка сетевых адаптеров",ee:"NVIDIA's network adapter line",d:"Быстрая сетевая карта без процессора на борту. Отличие от BlueField: там та же карта плюс вычислительная часть. Тоже наследство Mellanox.",de:"A fast network card with no processor on board. The difference from BlueField: that is the same card plus a compute part. Also from Mellanox."},
+{s:"Продукты",t:"Quantum",e:"коммутаторы InfiniBand",ee:"InfiniBand switches",d:"Название линейки, к квантовым вычислениям отношения не имеет. Quantum-X Photonics — версия с оптикой, встроенной в чип.",de:"A product line name with nothing to do with quantum computing. Quantum-X Photonics is the version with optics built into the chip."},
+{s:"Продукты",t:"Spectrum",e:"коммутаторы Ethernet",ee:"Ethernet switches",d:"Вторая сетевая линейка. Spectrum-4 — чип, на котором строится платформа Spectrum-X.",de:"The second networking line. Spectrum-4 is the chip the Spectrum-X platform is built on."},
+{s:"Продукты",t:"Jetson",e:"платы для edge и встраиваемых систем",ee:"boards for edge and embedded systems",d:"Малые модули для вычислений у источника данных: камеры, цеха, базовые станции. Только inference, ограниченные ресурсы и питание.",de:"Small modules for computing at the data source: cameras, factory floors, base stations. Inference only, with limited power and resources."},
+{s:"Продукты",t:"Grace",e:"серверный процессор NVIDIA на ARM",ee:"NVIDIA's ARM server CPU",d:"72 ядра Neoverse V2. Существует ради прямой связи с GPU по NVLink-C2C, а не ради конкуренции с x86. Софт под ARM нужен собранный отдельно.",de:"72 Neoverse V2 cores. It exists for the direct NVLink-C2C link to the GPU, not to compete with x86. Software has to be built for ARM separately."},
+{s:"Продукты",t:"training-class и inference-class",te:"training-class and inference-class",e:"два класса карт",ee:"two classes of card",d:"Training (H100, A100, B200): много HBM, NVLink, 700 Вт, SXM. Inference (L4, L40S, T4): меньше памяти, PCIe, L4 всего 72 Вт в один слот. Запросы независимы, связь между картами не нужна — важна выдача на ватт и на доллар.",de:"Training (H100, A100, B200): plenty of HBM, NVLink, 700 W, SXM. Inference (L4, L40S, T4): less memory, PCIe, the L4 just 72 W in a single slot. Requests are independent and card-to-card links are not needed — what counts is output per watt and per dollar."},
+{s:"Продукты",t:"Ada Lovelace",e:"архитектура с буквой L",ee:"the architecture behind the L prefix",d:"Современница Hopper, но другая линейка: L4, L40S, RTX. Есть RT-ядра и видеокодеки, которых нет у H100. Hopper и Blackwell — вычисления, Ada — графика и inference.",de:"A contemporary of Hopper but a separate line: L4, L40S, RTX. It has RT cores and video codecs the H100 lacks. Hopper and Blackwell for compute, Ada for graphics and inference."},
+{s:"Продукты",t:"Ampere → Hopper → Blackwell",e:"поколения архитектуры GPU",ee:"GPU architecture generations",d:"A100 (2020, появился MIG) → H100 (2022) → B200 (2024). До них Volta (V100, появились tensor cores) и Turing (T4). Названы по фамилиям учёных: Ампер, Хоппер, Блэквелл.",de:"A100 (2020, where MIG appeared) → H100 (2022) → B200 (2024). Before them Volta (V100, where tensor cores appeared) and Turing (T4). Named after scientists: Ampère, Hopper, Blackwell."},
+
+/* --- Сеть --- */
+{s:"Сеть",t:"InfiniBand",e:"сетевой стандарт для кластеров",ee:"a networking standard for clusters",d:"Не Ethernet: свои коммутаторы, кабели и адаптеры. Ключевое свойство по формулировке курса — intelligent offloading: обработка уходит в адаптер. Lossless от конструкции. Связь между узлами, не между GPU — то NVLink.",de:"Not Ethernet: its own switches, cables and adapters. The course's phrasing for its key property is intelligent offloading — processing moves into the adapter. Lossless by design. It links nodes, not GPUs — that is NVLink."},
+{s:"Сеть",t:"RDMA",e:"Remote Direct Memory Access",ee:"Remote Direct Memory Access",d:"Адаптер пишет напрямую в память другого узла. Обходит стек TCP/IP в ядре и копирование буферов — zero-copy, kernel bypass. Задержка единицы микросекунд против десятков. Протокол не исчезает, его обрабатывает железо.",de:"The adapter writes straight into another node's memory. It bypasses the kernel TCP/IP stack and buffer copying — zero-copy, kernel bypass. Latency in single microseconds against tens. The protocol does not disappear; hardware handles it."},
+{s:"Сеть",t:"RoCE",e:"RDMA over Converged Ethernet",ee:"RDMA over Converged Ethernet",d:"Инкапсуляция транспорта InfiniBand в Ethernet-кадры. Открытый стандарт IBTA, не технология NVIDIA. Требует lossless-режима на всех коммутаторах пути — отсюда репутация: дешевле по железу, сложнее в настройке.",de:"InfiniBand transport encapsulated in Ethernet frames. An open IBTA standard, not an NVIDIA technology. It needs lossless mode on every switch along the path — hence the reputation: cheaper hardware, harder configuration."},
+{s:"Сеть",t:"RoCEv1 / RoCEv2",e:"две версии",ee:"the two versions",d:"v1 — поверх Ethernet, работает только внутри одного L2-сегмента. v2 — в UDP/IP, маршрутизируется, порт 4791. UDP выбран потому, что надёжностью занимаются lossless-сеть и сам RDMA, а не транспорт.",de:"v1 rides on Ethernet and works only inside one L2 segment. v2 sits in UDP/IP, routes, port 4791. UDP was chosen because reliability is handled by the lossless fabric and by RDMA itself, not by the transport."},
+{s:"Сеть",t:"PFC",e:"Priority Flow Control",ee:"Priority Flow Control",d:"Аварийный тормоз. Получатель видит переполнение буфера и шлёт отправителю паузу. Работает по приоритетам: можно остановить только RDMA, не трогая остальной трафик.",de:"The emergency brake. The receiver sees its buffer overflowing and sends the sender a pause. It works per priority, so RDMA can be halted without touching other traffic."},
+{s:"Сеть",t:"ECN",e:"Explicit Congestion Notification",ee:"Explicit Congestion Notification",d:"Мягкое торможение заранее. Коммутатор помечает пакеты при росте очереди, получатель сообщает отправителю, тот снижает темп. Вместе с PFC и даёт lossless для RoCE.",de:"Gentle braking, applied early. The switch marks packets as the queue grows, the receiver tells the sender, the sender slows down. Together with PFC this is what makes RoCE lossless."},
+{s:"Сеть",t:"NDR / XDR",e:"поколения скорости InfiniBand",ee:"InfiniBand speed generations",d:"NDR — 400 Гбит/с на порт, XDR — 800. Цифра относится к порту из четырёх линий: у NDR это 100 на линию. Разъёмы меняются вместе с поколением, кабели не подходят к старым портам.",de:"NDR is 400 Gb/s per port, XDR 800. The figure refers to a four-lane port: on NDR that is 100 per lane. Connectors change with the generation and cables do not fit older ports."},
+{s:"Сеть",t:"DAC",e:"Direct Attach Copper",ee:"Direct Attach Copper",d:"Медный кабель с припаянными разъёмами. Пассивный, не греется, не требует питания. На 100G и выше работает на пределе: реально 2–3 метра, не заявленные пять. Жёсткий, в лотки укладывается плохо.",de:"Copper cable with the connectors soldered on. Passive, no heat, no power draw. At 100G and above it runs at its limit: 2–3 metres in practice, not the five on the datasheet. Stiff and awkward in cable trays."},
+{s:"Сеть",t:"AOC",e:"Active Optical Cable",ee:"Active Optical Cable",d:"Оптоволокно с впаянными трансиверами. Десятки метров, тонкий и гибкий, помех не ловит. Греются концы: 15–20 Вт на модуль при 400–800G. Хрупок на изгиб и при перетяжке стяжками.",de:"Fibre with transceivers moulded into the ends. Tens of metres, thin and flexible, immune to interference. The ends run hot: 15–20 W per module at 400–800G. Fragile when bent or over-tightened with ties."},
+{s:"Сеть",t:"QSFP / OSFP",e:"форм-факторы разъёмов",ee:"transceiver form factors",d:"QSFP — четыре линии, стандарт для 40–200G. OSFP — восемь линий, крупнее, с радиатором на корпусе, пришёл под 400 и 800G. Механически несовместимы.",de:"QSFP — four lanes, the standard for 40–200G. OSFP — eight lanes, larger, with a heatsink on the shell, introduced for 400 and 800G. Mechanically incompatible."},
+{s:"Сеть",t:"CPO",e:"Co-Packaged Optics",ee:"Co-Packaged Optics",d:"Оптика в одном корпусе с чипом коммутатора вместо сменных трансиверов. Убирает проблемный электрический тракт: потери падают с 22 дБ до примерно 4, потребление втрое. Оптика впаяна, лазеры остаются внешними.",de:"Optics in the same package as the switch chip instead of pluggable transceivers. It removes the troublesome electrical path: loss drops from 22 dB to about 4, power to a third. The optics are fixed in place; the lasers stay external."},
+{s:"Сеть",t:"DDM",e:"Digital Diagnostics Monitoring",ee:"Digital Diagnostics Monitoring",d:"Телеметрия оптического модуля: температура, уровни сигнала. Через неё ловят деградацию — при перегреве модуль не выключается, а начинает ошибаться.",de:"Telemetry from an optical module: temperature, signal levels. It is how degradation is caught — an overheating module does not switch off, it starts making errors."},
+{s:"Сеть",t:"BER",e:"Bit Error Rate",ee:"Bit Error Rate",d:"Частота битовых ошибок. Полезен счётчик pre-FEC BER: линк может выглядеть рабочим, потому что FEC вытягивает, но по счётчику видно, что запаса нет.",de:"Bit error rate. The pre-FEC BER counter is the useful one: a link can look healthy because FEC is covering for it, while the counter shows there is no margin left."},
+{s:"Сеть",t:"FEC",e:"Forward Error Correction",ee:"Forward Error Correction",d:"Избыточные биты в потоке, позволяющие восстановить повреждённые данные без переспроса. Лечит ошибки передачи, но не заторы — это разные вещи.",de:"Redundant bits in the stream that let damaged data be rebuilt without asking again. It fixes transmission errors, not congestion — different problems."},
+{s:"Сеть",t:"UI",e:"Unit Interval",ee:"Unit Interval",d:"Длительность одного бита. В нём измеряют jitter tolerance: 0,3 UI значит, что приёмник терпит смещение до трети битового интервала. На 100 Гбит/с на линию бит длится около 10 пикосекунд.",de:"The duration of one bit. Jitter tolerance is measured in it: 0.3 UI means the receiver tolerates drift of up to a third of a bit period. At 100 Gb/s per lane a bit lasts about 10 picoseconds."},
+{s:"Сеть",t:"jitter",e:"дрожание сигнала во времени",ee:"timing wobble in the signal",d:"Биты приходят чуть раньше или позже ожидаемого момента. Jitter tolerance — сколько приёмник терпит, jitter generation — сколько вносит передатчик. Диагностика через eye diagram: чем больше дрожания, тем уже глаз.",de:"Bits arrive slightly early or late. Jitter tolerance is how much the receiver absorbs, jitter generation how much the transmitter adds. Diagnosed with an eye diagram: the more jitter, the narrower the eye."},
+{s:"Сеть",t:"Magnum IO",e:"зонтичный стек ввода-вывода у NVIDIA",ee:"NVIDIA's umbrella I/O stack",d:"Объединяет GPUDirect RDMA, GPUDirect Storage, NCCL и библиотеки работы с сетью и хранилищем. Софтверный слой поверх — сама разгрузка RDMA происходит в сетевом адаптере, а не здесь.",de:"It covers GPUDirect RDMA, GPUDirect Storage, NCCL and the networking and storage libraries. A software layer on top — the RDMA offload itself happens in the network adapter, not here."},
+{s:"Сеть",t:"UFM",e:"Unified Fabric Manager",ee:"Unified Fabric Manager",d:"Управление фабрикой InfiniBand: топология, состояние линков и коммутаторов, ошибки и заторы. Наследство Mellanox. Разделение: DCGM смотрит на карты, UFM на сеть между ними.",de:"Management for an InfiniBand fabric: topology, link and switch health, errors and congestion. From Mellanox. The split: DCGM watches the cards, UFM the network between them."},
+{s:"Сеть",t:"NCCL",e:"NVIDIA Collective Communications Library",ee:"NVIDIA Collective Communications Library",d:"Коллективные операции между GPU при обучении: all-reduce, broadcast, all-gather. Сама выбирает путь по топологии — NVLink внутри сервера, InfiniBand между. Мнемоника: cuDNN считает, NCCL передаёт.",de:"Collective operations between GPUs during training: all-reduce, broadcast, all-gather. It picks its path by topology — NVLink inside a server, InfiniBand between them. Mnemonic: cuDNN computes, NCCL transfers."},
+{s:"Сеть",t:"SHARP",e:"агрегация в сети",ee:"aggregation inside the network",d:"Коллективные операции выполняются прямо в коммутаторах InfiniBand, а не на узлах. Пример in-network computing и часть того самого offloading.",de:"Collective operations run inside the InfiniBand switches rather than on the nodes. An example of in-network computing and part of that same offloading."},
+{s:"Сеть",t:"Spectrum-X",e:"Ethernet-платформа NVIDIA под AI",ee:"NVIDIA's Ethernet platform for AI",d:"Коммутатор Spectrum-4 плюс BlueField-3, работают в связке и обмениваются состоянием сети. Adaptive routing, congestion control, оптимизация под NCCL. Кабели стандартные Ethernet — второй контур строить не нужно.",de:"A Spectrum-4 switch plus BlueField-3, working as a pair and exchanging fabric state. Adaptive routing, congestion control, tuned for NCCL. Cabling is standard Ethernet — no second fabric to build."},
+{s:"Сеть",t:"leaf-spine",e:"двухуровневая топология",ee:"two-tier topology",d:"Leaf — коммутаторы, к которым подключены серверы. Spine — связывают leaf между собой. Узлы на разных leaf общаются через spine.",de:"Leaf switches have the servers attached. Spine switches connect the leaves to each other. Nodes on different leaves talk through the spine."},
+{s:"Сеть",t:"oversubscription",e:"узкое место наверх",ee:"the narrow path upward",d:"Соотношение полосы вниз к узлам и вверх к spine. 4:1 — наверх пускают четверть. Для обычных нагрузок незаметно, для all-reduce губительно: все узлы говорят со всеми одновременно. Проявляется при росте кластера, когда узлы перестают помещаться на один leaf. В AI-фабриках требуют non-blocking, 1:1.",de:"The ratio of bandwidth down to the nodes against bandwidth up to the spine. 4:1 lets a quarter through. Invisible for ordinary workloads, fatal for all-reduce, where every node talks to every other at once. It surfaces as the cluster grows and nodes no longer fit on one leaf. AI fabrics are specified non-blocking, 1:1."},
+{s:"Сеть",t:"fat-tree",e:"топология AI-кластера",ee:"the AI cluster topology",d:"На каждом уровне ширина канала наверх не меньше суммарной вниз, поэтому при обмене всех со всеми узкого места нет. Отсюда огромное количество линков — главный драйвер стоимости кабельной работы.",de:"At every tier the upward bandwidth is at least the sum of the downward, so all-to-all exchange has no bottleneck. Hence the enormous link count — the main driver of cabling cost."},
+{s:"Сеть",t:"east-west / north-south",e:"направления трафика",ee:"traffic directions",d:"East-west — между серверами внутри дата-центра, north-south — наружу и снаружи. В AI-кластере east-west на порядки превышает north-south, и вся сетевая архитектура строится под него.",de:"East-west is between servers inside the data centre, north-south in and out of it. In an AI cluster east-west dwarfs north-south, and the whole network is designed around it."},
+{s:"Сеть",t:"all-reduce",e:"коллективная операция обучения",ee:"the collective operation of training",d:"На каждом шаге каждая карта считает свой кусок, потом все складывают результаты и получают общее обновление весов. Требует участия всех — отсюда остановка прогона при отказе одного узла.",de:"At each step every card computes its share, then all the results are summed and the same update goes back to everyone. It needs every participant — which is why one failed node halts the run."},
+
+/* --- Хранилище --- */
+{s:"Хранилище",t:"NVMe-oF",e:"NVMe over Fabrics",ee:"NVMe over Fabrics",d:"Удалённый накопитель виден серверу как локальный. Работает поверх InfiniBand, RoCE или TCP. Часто разгружается на DPU.",de:"A remote drive appears to the server as a local one. It runs over InfiniBand, RoCE or TCP. Often offloaded to a DPU."},
+{s:"Хранилище",t:"GDS",e:"GPUDirect Storage",ee:"GPUDirect Storage",d:"Данные идут с накопителя прямо в память GPU, минуя память процессора. Убирает лишнее копирование. Та же логика, что GPUDirect RDMA для сети.",de:"Data goes from the drive straight into GPU memory, bypassing CPU memory. It removes a copy. The same logic as GPUDirect RDMA for networking."},
+{s:"Хранилище",t:"parallel file system",e:"параллельная файловая система",ee:"parallel file system",d:"Файл разложен по многим серверам, клиенты читают со всех сразу. Основной вариант для AI-кластеров: сотни узлов читают датасет одновременно, обычный файловый сервер этого не выдерживает. Lustre, GPFS, WekaFS, VAST, DDN.",de:"A file is spread across many servers and clients read from all of them at once. The standard choice for AI clusters: hundreds of nodes read the dataset simultaneously and an ordinary file server cannot keep up. Lustre, GPFS, WekaFS, VAST, DDN."},
+{s:"Хранилище",t:"checkpointing",e:"периодический снимок весов",ee:"periodic snapshot of the weights",d:"Сотни гигабайт записываются регулярно и быстро, иначе прогон стоит во время записи. Без чекпоинта отказ узла означает потерю всей работы с последнего снимка. Отдельное требование к хранилищу.",de:"Hundreds of gigabytes written regularly and fast, or the run stalls during the write. Without checkpoints a node failure costs all the work since the last one. A storage requirement in its own right."},
+{s:"Хранилище",t:"профиль нагрузки при обучении",te:"training I/O profile",e:"read и re-read",ee:"read and re-read",d:"Датасет читается заново на каждой эпохе, те же файлы круг за кругом. Отсюда важны быстрое чтение и кэширование, а не просто полоса. Формулировка курса — read and re-read performance.",de:"The dataset is read again on every epoch, the same files round after round. So fast reads and caching matter, not raw bandwidth alone. The course's phrasing is read and re-read performance."},
+{s:"Хранилище",t:"storage tiers",e:"уровни хранения",ee:"storage tiers",d:"Горячий — локальный NVMe или быстрая параллельная система, под активный прогон. Тёплый — сетевое хранилище. Холодный — объектное, архив, датасеты.",de:"Hot — local NVMe or a fast parallel system, for the active run. Warm — networked storage. Cold — object storage, archive, datasets."},
+
+/* --- Инфраструктура --- */
+{s:"Инфраструктура",t:"IaaS / PaaS / SaaS / AIaaS",e:"модели потребления облака",ee:"cloud consumption models",d:"IaaS — голые виртуалки с GPU, дальше всё твоё. PaaS — готовая платформа, ты приносишь контейнеры: managed Kubernetes именно здесь. SaaS — готовое приложение. AIaaS — модель как сервис через API, своего не запускаешь вообще.",de:"IaaS — bare VMs with GPUs, everything above is yours. PaaS — a ready platform and you bring containers: managed Kubernetes belongs here. SaaS — a finished application. AIaaS — a model as a service over an API; you run nothing yourself."},
+{s:"Инфраструктура",t:"PUE",e:"Power Usage Effectiveness",ee:"Power Usage Effectiveness",d:"Общее потребление площадки ÷ потребление IT-оборудования. 2,0 — старые площадки, 1,5 — среднее, 1,1–1,2 — хорошо спроектированный ЦОД. Метрика дата-центра, не чипа. Ближе к 1,0 лучше.",de:"Total site consumption ÷ IT equipment consumption. 2.0 for older sites, 1.5 average, 1.1–1.2 for a well-designed data centre. A metric for the facility, not the chip. Closer to 1.0 is better."},
+{s:"Инфраструктура",t:"WUE / CUE",e:"Water / Carbon Usage Effectiveness",ee:"Water / Carbon Usage Effectiveness",d:"Родственные PUE метрики по воде и углероду. В курсе упоминаются, глубоко не спрашиваются.",de:"PUE's relatives for water and carbon. Mentioned in the course, not examined in depth."},
+{s:"Инфраструктура",t:"CDU",e:"Coolant Distribution Unit",ee:"Coolant Distribution Unit",d:"Узел на стыке контура стойки и контура здания. Внутри теплообменник, насосы, фильтры, контроль утечек. Сам не охлаждает — распределяет теплоноситель и передаёт тепло дальше.",de:"The unit where the rack loop meets the building loop. Inside: a heat exchanger, pumps, filters, leak detection. It does not chill — it distributes coolant and passes the heat along."},
+{s:"Инфраструктура",t:"CDM",e:"Coolant Distribution Manifold",ee:"Coolant Distribution Manifold",d:"Вертикальные коллекторы в стойке с отводами на каждый лоток. В отличие от CDU, просто разводка без насосов и теплообменника.",de:"Vertical manifolds in the rack with a tap-off to each tray. Unlike a CDU, plain distribution with no pumps or heat exchanger."},
+{s:"Инфраструктура",t:"DLC",e:"Direct Liquid Cooling",ee:"Direct Liquid Cooling",d:"Жидкость к чипу через холодную плиту. Промежуточный вариант — теплообменник в задней двери стойки. Крайний — immersion, погружение целиком. До 40 кВт на стойку хватает воздуха, свыше 70 — только жидкость.",de:"Liquid to the chip through a cold plate. The middle option is a rear-door heat exchanger; the extreme one is immersion. Up to 40 kW per rack air will do; above 70 only liquid."},
+{s:"Инфраструктура",t:"cold plate",e:"холодная плита",ee:"cold plate",d:"Металлический блок с каналами, прижатый к кристаллу через термоинтерфейс. От него две трубки — подача и обратка — к коллекторам стойки.",de:"A metal block with channels, pressed to the die through a thermal interface. Two pipes leave it — supply and return — to the rack manifolds."},
+{s:"Инфраструктура",t:"quick disconnect",e:"сухой разъём контура",ee:"dry-break coolant coupling",d:"Перекрывается при разъединении, поэтому лоток вынимается без слива контура и протечки. Без него замена узла означала бы остановку всей стойки.",de:"It seals as it separates, so a tray comes out without draining the loop or spilling. Without it, replacing a node would mean stopping the whole rack."},
+{s:"Инфраструктура",t:"backplane",e:"объединительная панель",ee:"backplane",d:"Соединения проложены в самой конструкции, а не кабелями. В NVL72 через него идёт NVLink между лотками — отсюда стойка как единое изделие, которое не разбирается на части произвольно.",de:"Connections run inside the structure itself rather than through cables. In NVL72 NVLink runs between trays through it — which is why the rack is one appliance and cannot be broken up at will."},
+{s:"Инфраструктура",t:"BMC",e:"Baseboard Management Controller",ee:"Baseboard Management Controller",d:"Контроллер управления сервером: удалённое включение, консоль, телеметрия. Работает независимо от основной ОС. В кластере обычно на отдельной сети управления.",de:"The server management controller: remote power, console, telemetry. It runs independently of the main OS. In a cluster it usually sits on a separate management network."},
+{s:"Инфраструктура",t:"out-of-band",e:"отдельный контур управления",ee:"a separate management path",d:"Физически независимая сеть только под управление: медь, гигабит, RJ45. Работает, даже когда рабочая сеть легла — через неё заходят на консоль, перезагружают, откатывают конфигурацию. Через неё же BMC и Redfish. Противоположность — in-band, управление по той же сети, что данные.",de:"A physically independent network for management only: copper, gigabit, RJ45. It stays up when the production network is down — you reach the console, reboot, roll back a config. BMC and Redfish ride on it. The opposite is in-band, management over the same network as the data."},
+{s:"Инфраструктура",t:"Redfish",e:"стандарт DMTF для управления железом",ee:"DMTF standard for hardware management",d:"REST API поверх BMC, пришёл на смену IPMI. Питание, образы, температура, вентиляторы, блоки питания. Мониторит железо, а не нагрузку — метрики GPU и задач это DCGM.",de:"A REST API on top of the BMC, successor to IPMI. Power, media, temperature, fans, PSUs. It monitors hardware, not workloads — GPU and job metrics belong to DCGM."},
+{s:"Инфраструктура",t:"AI Factory",e:"площадка, спроектированная под AI целиком",ee:"a site designed end-to-end for AI",d:"Конвейер: сырые данные на входе, обученные модели и ответы на выходе. Мерится выработкой (токены в секунду) и мегаваттами, а не стойками. Не про симуляции — то HPC. Верхний уровень иерархии: DGX → NVL72 → SuperPOD → AI Factory.",de:"A production line: raw data in, trained models and answers out. Measured in output (tokens per second) and megawatts rather than racks. Not about simulation — that is HPC. The top of the hierarchy: DGX → NVL72 → SuperPOD → AI Factory."},
+{s:"Инфраструктура",t:"edge",e:"вычисления у источника данных",ee:"computing at the data source",d:"Не в дата-центре, а на заводе, в магазине, в базовой станции. Только inference. Другие условия: пыль, температура, часто постоянный ток, нет персонала на месте — выезд это событие.",de:"Not in a data centre but on a factory floor, in a shop, at a base station. Inference only. Different conditions: dust, temperature swings, often DC power, no staff on site — a visit is an event."},
+
+/* --- Софт --- */
+{s:"Софт",t:"NGC",e:"NVIDIA GPU Cloud",ee:"NVIDIA GPU Cloud",d:"Не облако в смысле аренды вычислений, а реестр контейнеров (nvcr.io). Решает проблему совместимости версий: образ с подобранными CUDA, cuDNN и фреймворком. Обновления ежемесячно, тег — год и месяц.",de:"Not a cloud in the rental sense but a container registry (nvcr.io). It solves version compatibility: an image with CUDA, cuDNN and the framework already matched. Monthly releases, tagged by year and month."},
+{s:"Софт",t:"NIM",e:"NVIDIA Inference Microservices",ee:"NVIDIA Inference Microservices",d:"Контейнер, где модель упакована вместе с сервером и API. Развернул — получил работающий endpoint. Не надо собирать обвязку вокруг модели самому.",de:"A container with the model packaged together with a server and an API. Deploy it and you have a working endpoint. No need to build the scaffolding around the model yourself."},
+{s:"Софт",t:"TAO Toolkit",e:"Train, Adapt, Optimize",ee:"Train, Adapt, Optimize",d:"Дообучение готовых моделей из NGC на своих данных, почти без кода — конфиги вместо программирования. Transfer learning в упакованном виде: данных нужно на порядки меньше. Зрение и речь; для языковых моделей — NeMo.",de:"Fine-tuning ready models from NGC on your own data with almost no code — config files instead of programming. Transfer learning, packaged: orders of magnitude less data needed. Vision and speech; for language models use NeMo."},
+{s:"Софт",t:"NeMo",e:"фреймворк для языковых моделей",ee:"framework for language models",d:"Дообучение, кастомизация, RAG. Входит в верхний слой NVIDIA AI Enterprise рядом с NIM.",de:"Fine-tuning, customisation, RAG. Part of the top layer of NVIDIA AI Enterprise alongside NIM."},
+{s:"Софт",t:"DOCA",e:"Data Center Infrastructure-on-a-Chip Architecture",ee:"Data Center Infrastructure-on-a-Chip Architecture",d:"Программная платформа для DPU BlueField. То же, что CUDA для GPU: SDK, библиотеки, готовые сервисы. Та же стратегия — продать не чип, а экосистему.",de:"The software platform for BlueField DPUs. What CUDA is to the GPU: SDK, libraries, ready services. The same strategy — sell the ecosystem, not the chip."},
+{s:"Софт",t:"Merlin",e:"фреймворк рекомендательных систем",ee:"recommender systems framework",d:"Табличные разреженные данные, огромные embedding-таблицы на сотни гигабайт. Внутри NVTabular (подготовка признаков), HugeCTR (обучение с распределением таблиц), Merlin Systems (развёртывание).",de:"Sparse tabular data and embedding tables running to hundreds of gigabytes. Inside: NVTabular (feature prep), HugeCTR (training with distributed tables), Merlin Systems (deployment)."},
+{s:"Софт",t:"Modulus",e:"фреймворк physics-ML моделей",ee:"physics-ML framework",d:"Нейросети, учитывающие физические законы. Инженерное моделирование, климат, аэродинамика. Из той же группы отраслевых фреймворков, что Merlin и BioNeMo.",de:"Neural networks that respect physical laws. Engineering simulation, climate, aerodynamics. The same family of domain frameworks as Merlin and BioNeMo."},
+{s:"Софт",t:"DALI",e:"Data Loading Library",ee:"Data Loading Library",d:"Препроцессинг на GPU: декодирование JPEG, изменение размера, аугментации. Решает случай, когда GPU простаивает, потому что CPU не успевает готовить данные. Разделение: RAPIDS — таблицы и аналитика, DALI — картинки, видео и аудио при обучении.",de:"Preprocessing on the GPU: JPEG decode, resize, augmentation. For the case where the GPU idles because the CPU cannot prepare data fast enough. The split: RAPIDS for tables and analytics, DALI for images, video and audio during training."},
+{s:"Софт",t:"RAPIDS",e:"семейство библиотек для анализа данных на GPU",ee:"GPU data-science library family",d:"Переносит привычные инструменты Python на карту: cuDF вместо pandas, cuML вместо scikit-learn, cuGraph вместо NetworkX. Код почти не меняется, счёт идёт в десятки раз быстрее.",de:"It moves familiar Python tools onto the card: cuDF for pandas, cuML for scikit-learn, cuGraph for NetworkX. The code barely changes and runs tens of times faster."},
+{s:"Софт",t:"cuDF",e:"аналог pandas на GPU",ee:"pandas on the GPU",d:"Работа с таблицами: загрузка, фильтры, группировки, соединения. Часть RAPIDS, уровень подготовки данных перед обучением.",de:"Tables: loading, filters, group-bys, joins. Part of RAPIDS, the data-preparation layer before training."},
+{s:"Софт",t:"cuML",e:"аналог scikit-learn на GPU",ee:"scikit-learn on the GPU",d:"Классический машинный ML: кластеризация, регрессии, случайный лес, PCA. Именно классический, не нейросети — для них PyTorch и TensorFlow. Часть RAPIDS.",de:"Classical machine learning: clustering, regressions, random forest, PCA. Classical specifically, not neural networks — those are PyTorch and TensorFlow. Part of RAPIDS."},
+{s:"Софт",t:"cuGraph",e:"аналог NetworkX на GPU",ee:"NetworkX on the GPU",d:"Графовые алгоритмы: кратчайшие пути, выявление сообществ, PageRank. Для данных, устроенных как связи — транзакции, социальные сети, зависимости. Часть RAPIDS.",de:"Graph algorithms: shortest paths, community detection, PageRank. For data shaped as connections — transactions, social networks, dependencies. Part of RAPIDS."},
+{s:"Софт",t:"Nsight Systems / Compute",e:"профилировщики",ee:"profilers",d:"Systems — временная шкала всего прогона: где GPU ждала данных, сколько ушло на передачу. Compute — одно ядро CUDA в деталях. Разовый профилировочный прогон при разработке — в отличие от DCGM, который мониторит постоянно.",de:"Systems — a timeline of the whole run: where the GPU waited for data, how long transfers took. Compute — one CUDA kernel in detail. A one-off profiling run during development, unlike DCGM which monitors continuously."},
+{s:"Софт",t:"DCGM",e:"Data Center GPU Manager",ee:"Data Center GPU Manager",d:"Телеметрия карт: загрузка, температура, ошибки. Экспортёр отдаёт метрики в Prometheus. Ставится как часть мониторинга кластера.",de:"Card telemetry: utilisation, temperature, errors. The exporter feeds metrics to Prometheus. Installed as part of cluster monitoring."},
+{s:"Софт",t:"Base Command Manager",e:"управление своим кластером",ee:"managing your own cluster",d:"Ставится на твоё железо: развёртывание узлов, настройка, мониторинг. Наследник Bright Cluster Manager. Ключевое — on-premise, в отличие от Base Command Platform.",de:"Installed on your own hardware: node provisioning, configuration, monitoring. Successor to Bright Cluster Manager. The key word is on-premise, as opposed to Base Command Platform."},
+{s:"Софт",t:"Base Command Platform",e:"веб-сервис для DGX Cloud",ee:"the web service for DGX Cloud",d:"Запуск задач в браузере на арендованных вычислениях, инфраструктурой управляет NVIDIA. Мнемоника: Manager — твоё железо, Platform — облако.",de:"Launching jobs from a browser on rented compute, with NVIDIA running the infrastructure. Mnemonic: Manager is your hardware, Platform is the cloud."},
+{s:"Софт",t:"DGX Cloud",e:"аренда DGX у облачного провайдера",ee:"DGX rented from a cloud provider",d:"То же железо и софт, но без своей площадки. Задачи запускаются через Base Command Platform.",de:"The same hardware and software without a site of your own. Jobs are launched through Base Command Platform."},
+{s:"Софт",t:"gang scheduling",e:"всё или ничего",ee:"all or nothing",d:"Все части задачи запускаются одновременно или не запускаются вовсе. Без этого две задачи захватывают по половине карт и встают намёртво. В Slurm встроено, в Kubernetes нет — нужны Volcano, Kueue или Run:ai. Синоним: all-or-nothing scheduling.",de:"Every part of a job starts together or none does. Without it two jobs grab half the cards each and deadlock. Built into Slurm, absent from Kubernetes — hence Volcano, Kueue or Run:ai. Also called all-or-nothing scheduling."},
+{s:"Софт",t:"GPU Operator",e:"оператор Kubernetes",ee:"Kubernetes operator",d:"Разворачивает на узлах драйвер, container runtime, device plugin и мониторинг одним Helm-чартом. Удобная альтернатива ручной установке каждого компонента.",de:"It deploys the driver, container runtime, device plugin and monitoring onto the nodes from a single Helm chart. The convenient alternative to installing each piece by hand."},
+{s:"Софт",t:"device plugin",e:"NVIDIA Kubernetes Device Plugin",ee:"NVIDIA Kubernetes Device Plugin",d:"Регистрирует GPU как планируемый ресурс кластера. Без него планировщик про карты не знает. После него в манифесте пода можно запросить nvidia.com/gpu: 2.",de:"It registers GPUs as a schedulable cluster resource. Without it the scheduler knows nothing about the cards. With it, a pod manifest can request nvidia.com/gpu: 2."},
+{s:"Софт",t:"ONNX",e:"Open Neural Network Exchange",ee:"Open Neural Network Exchange",d:"Открытый формат обученной модели: граф вычислений плюс веса, без привязки к фреймворку. Цепочка развёртывания: PyTorch → ONNX → TensorRT → Triton. Убирает привязку к фреймворку на этапе развёртывания.",de:"An open format for a trained model: the computation graph plus weights, with no framework attached. The deployment chain: PyTorch → ONNX → TensorRT → Triton. It removes framework lock-in at deployment."},
+{s:"Софт",t:"TensorRT",e:"оптимизатор inference",ee:"inference optimiser",d:"Берёт обученную модель и перестраивает под конкретную карту: объединяет слои, снижает точность, подбирает оптимальные ядра. Ускоряет выдачу, обучением не занимается.",de:"It takes a trained model and rebuilds it for a specific card: fuses layers, lowers precision, picks the best kernels. It speeds up serving; it does not train."},
+{s:"Софт",t:"Triton",e:"Inference Server",ee:"Inference Server",d:"Сервер для обслуживания моделей: батчинг запросов, несколько моделей на карте, разные фреймворки за одним API. Образ лежит в NGC.",de:"A server for hosting models: request batching, several models per card, different frameworks behind one API. The image lives in NGC."},
+{s:"Софт",t:"DLSS",e:"Deep Learning Super Sampling",ee:"Deep Learning Super Sampling",d:"Игровая технология: карта рендерит кадр в низком разрешении, нейросеть достраивает до 4K. Работает на tensor cores. К дата-центру отношения не имеет — в тестах встречается только как отвлекающий вариант.",de:"A gaming technology: the card renders a frame at low resolution and a network upscales it to 4K. It runs on tensor cores. Nothing to do with the data centre — in tests it appears only as a distractor."},
+{s:"Софт",t:"IVA",e:"Intelligent Video Analytics",ee:"Intelligent Video Analytics",d:"Модель поверх видеопотока: распознаёт объекты, определяет события, выдаёт тревогу. Отличие от video surveillance — там камеры просто пишут архив, а человек смотрит. Если в вопросе AI и detect, ответ IVA.",de:"A model on top of a video stream: it recognises objects, identifies events, raises alerts. The difference from video surveillance is that there cameras merely record and a human watches. If a question says AI and detect, the answer is IVA."},
+{s:"Софт",t:"Metropolis",e:"платформа NVIDIA для видеоаналитики",ee:"NVIDIA's video analytics platform",d:"Зонтик над IVA-решениями: умный город, розница, промышленность. Внутри DeepStream — SDK для обработки видеопотоков на GPU.",de:"The umbrella over IVA solutions: smart city, retail, industry. DeepStream inside — the SDK for processing video streams on GPUs."},
+{s:"Софт",t:"Omniverse",e:"платформа 3D и симуляции",ee:"3D and simulation platform",d:"Совместная работа над 3D-сценами, фотореалистичная симуляция, цифровые двойники. В тестах часто стоит как отвлекающий вариант рядом с NGC и Clara — признаки в формулировке: virtual collaboration, photorealistic simulation.",de:"Collaborative 3D scenes, photorealistic simulation, digital twins. Often a distractor beside NGC and Clara — the tells are virtual collaboration and photorealistic simulation."},
+{s:"Софт",t:"Clara",e:"платформа NVIDIA для медицины",ee:"NVIDIA's healthcare platform",d:"Медицинская визуализация, геномика, приборы. Из той же группы отраслевых платформ, что Merlin для рекомендаций и Modulus для физики.",de:"Medical imaging, genomics, instruments. The same group of domain platforms as Merlin for recommendations and Modulus for physics."},
+{s:"Софт",t:"фреймворк vs библиотека",te:"framework vs library",e:"кто кого вызывает",ee:"who calls whom",d:"Библиотеку вызываешь ты, фреймворк вызывает твой код. PyTorch ведёт цикл обучения и сам зовёт cuDNN и cuBLAS. Уровни: приложение → фреймворк → библиотеки → CUDA → драйвер → GPU.",de:"You call a library; a framework calls your code. PyTorch runs the training loop and calls cuDNN and cuBLAS itself. The layers: application → framework → libraries → CUDA → driver → GPU."},
+{s:"Софт",t:"контейнер и драйвер",te:"container and driver",e:"что откуда берётся",ee:"what comes from where",d:"CUDA и фреймворк внутри образа, драйвер на хосте и пробрасывается внутрь через NVIDIA Container Runtime. Отсюда возможность держать разные версии CUDA на одной машине.",de:"CUDA and the framework live inside the image; the driver is on the host and is mounted in through the NVIDIA Container Runtime. That is how different CUDA versions coexist on one machine."},
+{s:"Софт",t:"AI Enterprise",e:"платная подписка NVIDIA",ee:"NVIDIA's paid subscription",d:"Поддерживаемые сборки, гарантии совместимости, SLA. Сверху NIM и NeMo, снизу Kubernetes-операторы и device plugin. Почти всё доступно бесплатно по отдельности — платят за ответственность.",de:"Supported builds, compatibility guarantees, an SLA. NIM and NeMo on top, Kubernetes operators and the device plugin below. Nearly all of it is free separately — what is paid for is accountability."},
+{s:"Софт",t:"AI Workflows",e:"готовые end-to-end примеры",ee:"ready end-to-end examples",d:"Собранное приложение под типовой сценарий: RAG-бот, анализ видеопотока, обнаружение мошенничества. Не одна модель, а связка с обвязкой и схемой развёртывания.",de:"An assembled application for a common scenario: a RAG bot, video stream analytics, fraud detection. Not one model but a pipeline with scaffolding and a deployment layout."},
+{s:"Софт",t:"mixed precision",e:"смешанная точность",ee:"mixed precision",d:"Операции в FP16 или FP8, а копия весов и состояние оптимизатора в FP32. Короткий формат в обучении берут ради скорости счёта, не ради памяти: самая объёмная часть всё равно остаётся длинной.",de:"Operations in FP16 or FP8 while the master weights and optimiser state stay FP32. Short formats are used in training for speed rather than memory: the bulkiest part stays long anyway."},
+{s:"Софт",t:"pruning",e:"удаление незначащих связей",ee:"removing insignificant connections",d:"После обучения веса, почти не влияющие на результат, обнуляют и выбрасывают. Модель меньше и быстрее при почти том же качестве. Стоит рядом с quantisation в приёмах оптимизации inference; с Ampere есть аппаратная поддержка разрежённости.",de:"After training, weights that barely affect the result are zeroed and dropped. The model gets smaller and faster at almost the same quality. It sits beside quantisation among inference optimisations; from Ampere onward there is hardware support for sparsity."},
+{s:"Софт",t:"quantisation",e:"огрубление готовой модели",ee:"coarsening a trained model",d:"Перевод в более короткий формат после обучения или с учётом огрубления прямо в обучении. При inference режет память сразу: оптимизатора нет, лежат только веса.",de:"Converting to a shorter format after training, or with the coarsening accounted for during training. At inference it cuts memory immediately: no optimiser state, only weights."},
+
+/* --- Модели --- */
+{s:"Модели",t:"foundation model",e:"базовая модель",ee:"foundation model",d:"Обучена на широких данных и адаптируется под многие задачи. Способы адаптации: prompt engineering, fine-tuning (меняет веса), RAG. LLM — её текстовое подмножество, не наоборот.",de:"Trained on broad data and adapted to many tasks. Adaptation routes: prompt engineering, fine-tuning (which changes weights), RAG. An LLM is its text subset, not the other way round."},
+{s:"Модели",t:"LLM",e:"Large Language Model",ee:"Large Language Model",d:"Foundation model для текста. Данные разбиты на токены, задача всегда одна — предсказать следующий. Large не украшение: от масштаба появляются emergent abilities.",de:"A foundation model for text. Data is split into tokens and the task is always the same — predict the next one. Large is not decoration: scale is where emergent abilities come from."},
+{s:"Модели",t:"LMM",e:"Large Multimodal Model",ee:"Large Multimodal Model",d:"Принимает не только текст — картинки, иногда аудио и видео. Ядро остаётся текстовым: изображение превращают в токены. Multimodal input и multimodal output — разные вещи.",de:"It takes more than text — images, sometimes audio and video. The core stays textual: an image is turned into tokens. Multimodal input and multimodal output are different things."},
+{s:"Модели",t:"transformer",e:"архитектура современных LLM",ee:"the architecture behind modern LLMs",d:"Attention связывает токены напрямую, расстояние не имеет значения. Считается параллельно — отсюда масштабируемость на GPU и победа над RNN. Стоимость растёт квадратично от длины контекста.",de:"Attention links tokens directly and distance does not matter. It computes in parallel — hence GPU scalability and the win over RNNs. Cost grows quadratically with context length."},
+{s:"Модели",t:"attention",e:"механизм внимания",ee:"the attention mechanism",d:"Для каждого токена расставляет веса по всем остальным: на это смотри сильно, на это нет. Multi-head — несколько механизмов параллельно, каждый ловит свой тип связей. Positional encoding добавляет позицию явно.",de:"For each token it assigns weights over all the others: look hard here, ignore that. Multi-head runs several in parallel, each catching a different kind of relation. Positional encoding adds position explicitly."},
+{s:"Модели",t:"diffusion",e:"генерация через снятие шума",ee:"generation by removing noise",d:"Старт из случайного шума, десятки шагов денойзинга, текстовый промпт направляет каждый шаг. Основа DALL·E 2 и 3, Stable Diffusion, eDiff-I. Обучается стабильно, но inference дорогой.",de:"Start from random noise, dozens of denoising steps, with the text prompt steering each one. Behind DALL·E 2 and 3, Stable Diffusion, eDiff-I. It trains stably but inference is expensive."},
+{s:"Модели",t:"GAN",e:"Generative Adversarial Network",ee:"Generative Adversarial Network",d:"Генератор и дискриминатор соревнуются. Генератор учится через судью, настоящих картинок не видит. Inference быстрый — один проход. Обучение нестабильное, характерный сбой — mode collapse.",de:"A generator and a discriminator compete. The generator learns through the judge and never sees real images. Inference is fast — a single pass. Training is unstable, with mode collapse as the signature failure."},
+{s:"Модели",t:"mode collapse",e:"сбой обучения GAN",ee:"the signature GAN failure",d:"Генератор находит один трюк, стабильно обманывающий дискриминатор, и выдаёт одну и ту же картинку на всё подряд. Термин спрашивают в вопросах про недостатки GAN.",de:"The generator finds one trick that reliably fools the discriminator and emits the same picture for everything. The term shows up in questions about GAN drawbacks."},
+{s:"Модели",t:"CNN",e:"Convolutional Neural Network",ee:"Convolutional Neural Network",d:"Свёрточная сеть для изображений. Окно 3×3 водят по картинке, один фильтр ищет свою примету везде. Первые слои видят края, следующие части, дальше объекты. AlexNet 2012 — старт нынешнего бума.",de:"A convolutional network for images. A 3×3 window is swept over the picture and one filter looks for its feature everywhere. Early layers see edges, later ones parts, then whole objects. AlexNet in 2012 started the current boom."},
+{s:"Модели",t:"RNN",e:"Recurrent Neural Network",ee:"Recurrent Neural Network",d:"Последовательная обработка с hidden state как памятью. Вытеснена трансформерами: не параллелится, а значит не масштабируется на GPU. Плюс vanishing gradient — начало длинного текста стирается.",de:"Sequential processing with a hidden state as memory. Displaced by transformers: it does not parallelise, so it does not scale on GPUs. Plus vanishing gradients — the start of a long text fades away."},
+{s:"Модели",t:"LSTM / GRU",e:"gated-варианты RNN",ee:"gated RNN variants",d:"Ворота решают, что сохранить в памяти, а что забыть. У LSTM трое ворот и два состояния, у GRU двое ворот и одно — проще и быстрее. Обе про длинные последовательности.",de:"Gates decide what to keep in memory and what to forget. LSTM has three gates and two states, GRU two gates and one — simpler and faster. Both are about long sequences."},
+{s:"Модели",t:"GNN",e:"Graph Neural Network",ee:"Graph Neural Network",d:"Работа с данными в виде графа: связи, молекулы, сети. Библиотеки PyTorch Geometric и DGL. В курсе только упоминаются.",de:"Working with graph-shaped data: links, molecules, networks. The libraries are PyTorch Geometric and DGL. Only mentioned in the course."},
+{s:"Модели",t:"MoE",e:"Mixture of Experts",ee:"Mixture of Experts",d:"В модели много параметров, но на каждый запрос активируется лишь часть. Считаешь меньше при том же размере — один из путей роста, когда гонка форматов исчерпана.",de:"The model has many parameters but only part of them activates per request. Less computation at the same size — one of the growth routes now that the format race is running out."},
+{s:"Модели",t:"RAG",e:"Retrieval-Augmented Generation",ee:"Retrieval-Augmented Generation",d:"Модели подсовывают свои документы в момент запроса. Адаптация без изменения весов — в отличие от fine-tuning.",de:"The model is handed your documents at query time. Adaptation without touching the weights, unlike fine-tuning."},
+{s:"Модели",t:"веса",te:"weights",e:"параметры модели",ee:"model parameters",d:"Число, на которое умножается входящий сигнал: насколько сильно этот вход влияет на результат. Архитектура открыта, ценность в конкретных значениях. 70 млрд параметров в FP16 — 140 ГБ.",de:"The number an incoming signal is multiplied by: how strongly that input affects the result. The architecture is public; the value lies in the specific numbers. 70 billion parameters in FP16 is 140 GB."},
+{s:"Модели",t:"метрики ранжирования",te:"ranking metrics",e:"NDCG, MAP, Precision@K",ee:"NDCG, MAP, Precision@K",d:"Для рекомендаций важен порядок, а не только попадание. NDCG — вес убывает с позицией, первое место ценнее десятого. MAP — усреднённая точность по позициям и пользователям. Precision@K — доля релевантного в первых K. Суффикс @K всегда признак метрики для списков.",de:"For recommendations the order matters, not just the hit. NDCG discounts by position — first place is worth more than tenth. MAP averages precision across positions and users. Precision@K is the share of relevant items in the top K. The @K suffix always marks a list metric."},
+{s:"Модели",t:"precision и recall",te:"precision and recall",e:"два способа ошибиться",ee:"two ways to be wrong",d:"Recall — сколько нужного поймали из всего, что было (ловит пропуски). Precision — из того, что пометили, сколько было правдой (ловит ложные тревоги). Двигаются в разные стороны: ловить больше значит чаще ошибаться.",de:"Recall — how much of what existed was caught (it tracks misses). Precision — of what was flagged, how much was real (it tracks false alarms). They pull against each other: catching more means erring more often."},
+{s:"Модели",t:"F1 score",e:"гармоническое среднее precision и recall",ee:"harmonic mean of precision and recall",d:"Одно число вместо двух. Гармоническое, а не обычное, потому что резко проседает, если одна из двух плохая — выкрутить что-то одно не получится. Ответ по умолчанию, когда класс редкий и важны обе стороны.",de:"One number instead of two. Harmonic rather than arithmetic because it collapses when either half is poor — you cannot game it by maximising one. The default answer when the class is rare and both sides matter."},
+{s:"Модели",t:"specificity",e:"доля верно пропущенных отрицательных",ee:"share of negatives correctly passed",d:"Смотрит только на обычный класс и ничего не знает про редкий. При перекосе классов ломается так же, как accuracy: модель, не помечающая ничего, получит 100%.",de:"It looks only at the ordinary class and knows nothing about the rare one. Under class imbalance it breaks exactly like accuracy: a model that flags nothing scores 100%."},
+{s:"Модели",t:"accuracy",e:"доля правильных ответов",ee:"share of correct answers",d:"Общая метрика классификации, порядка не учитывает. Для рекомендаций плохо работает: товаров миллионы, релевантных единицы, и модель, отвечающая «не релевантно» на всё, получит почти 100%.",de:"A general classification metric that ignores order. Poor for recommendations: millions of items, a handful relevant, and a model answering 'not relevant' to everything scores near 100%."},
+{s:"Модели",t:"ML vs deep learning",e:"что внутри чего",ee:"what sits inside what",d:"Deep learning — подмножество машинного обучения: многослойные сети, большие данные, признаки модель выделяет сама. Обычный ML шире и включает методы попроще, которым много данных не нужно. Признак в вопросе — large datasets и complex neural networks.",de:"Deep learning is a subset of machine learning: many layers, large data, features the model extracts for itself. Ordinary ML is broader and includes simpler methods that need little data. The tell in a question is large datasets and complex neural networks."},
+{s:"Модели",t:"curse of dimensionality",e:"проклятие размерности",ee:"curse of dimensionality",d:"Каждый лишний признак — ещё одно измерение. Данные растягиваются по огромному пространству, становятся разреженными, примеров на каждую комбинацию не хватает. Объясняет падение качества при добавлении ненужных признаков.",de:"Every extra feature is another dimension. Data spreads across a vast space, grows sparse, and there are not enough examples per combination. It explains why quality falls when useless features are added."},
+{s:"Модели",t:"feature scaling",e:"приведение признаков к одному масштабу",ee:"bringing features to one scale",d:"Если один признак измеряется десятками, а другой миллионами, поправки к их весам различаются в тысячи раз, а шаг обучения общий. Масштабирование делает их сопоставимыми. Ответ в тестах — про стабильность градиентов, не про выбросы или переобучение.",de:"If one feature is measured in tens and another in millions, the corrections to their weights differ by thousands while the learning step is shared. Scaling makes them comparable. The exam answer is about gradient stability, not outliers or overfitting."},
+{s:"Модели",t:"learning rate",e:"размер шага обучения",ee:"the size of the training step",d:"На него умножается градиент перед применением к весу. Один на все веса — отсюда и нужда в feature scaling. Слишком крупный шаг проскакивает минимум, слишком мелкий растягивает обучение.",de:"The gradient is multiplied by it before being applied to a weight. One value for every weight — which is why feature scaling is needed. Too large a step overshoots the minimum, too small drags training out."},
+{s:"Модели",t:"vanishing gradient",e:"затухание градиента",ee:"vanishing gradient",d:"Сигнал ошибки, идущий назад по слоям или шагам, затухает и до ранних почти не доходит. Проблема глубины сети и длинных последовательностей — не количества признаков. Лечилась воротами в LSTM и GRU.",de:"The error signal travelling back through layers or steps fades and barely reaches the early ones. A problem of network depth and long sequences — not of feature count. Gates in LSTM and GRU were the fix."},
+{s:"Модели",t:"backpropagation",e:"обратное распространение",ee:"backpropagation",d:"Ошибку прогоняют от выхода назад по слоям, определяя, какой вес насколько виноват. Вперёд — работа сети, назад — обучение.",de:"The error is pushed back from the output through the layers, working out how much each weight is to blame. Forward is the network working, backward is it learning."},
+{s:"Модели",t:"тензор",te:"tensor",e:"многомерный массив чисел",ee:"a multi-dimensional array",d:"Скаляр, вектор, матрица и дальше. В модели тензоры — всё: входные данные, веса, промежуточные результаты. Обучение сводится к их перемножению, отсюда tensor cores.",de:"Scalar, vector, matrix and onward. In a model tensors are everything: inputs, weights, intermediate results. Training reduces to multiplying them, hence tensor cores."},
+{s:"Модели",t:"data drift",e:"сдвиг распределения данных",ee:"shift in the data distribution",d:"Данные в проде со временем перестают походить на обучающие, и модель начинает ошибаться, хотя её не трогали. Нарушается предположение о стационарности. Лечится мониторингом, обнаружением дрейфа и переобучением.",de:"Production data stops resembling the training data over time and the model starts erring although nothing was changed. The stationarity assumption is violated. Addressed by monitoring, drift detection and retraining."},
+{s:"Модели",t:"stationarity",e:"стационарность",ee:"stationarity",d:"Предположение, что статистические свойства данных не меняются со временем. На нём держится всё обучение: учим на прошлом, применяем к будущему. Соседние предположения — independence (наблюдения независимы), linearity (связь линейная), completeness (нет пропусков).",de:"The assumption that the statistical properties of the data do not change over time. All training rests on it: learn from the past, apply to the future. Neighbouring assumptions are independence (observations are unrelated), linearity (the relation is linear), completeness (no gaps)."},
+{s:"Модели",t:"distributed training",e:"одна модель на многих GPU",ee:"one model across many GPUs",d:"Зонтичный термин для обучения на кластере. Три способа разделить работу комбинируются — это называют 3D parallelism.",de:"The umbrella term for training on a cluster. Three ways of splitting the work combine — that combination is called 3D parallelism."},
+{s:"Модели",t:"data parallelism",e:"копия модели на каждой карте",ee:"a copy of the model on every card",d:"Данные разные, модель одна и та же. Градиенты объединяют через all-reduce. Самый частый вариант, работает пока модель помещается в одну карту.",de:"Different data, the same model. Gradients are merged through all-reduce. The commonest arrangement, valid while the model fits on one card."},
+{s:"Модели",t:"model parallelism",e:"модель разрезана по картам",ee:"the model cut across cards",d:"Когда модель не влезает в одну GPU. Pipeline parallelism — режут по слоям, как конвейер. Tensor parallelism — режут внутри слоя, одну матрицу между картами; обмен так интенсивен, что делают только внутри сервера по NVLink.",de:"For when the model does not fit on one GPU. Pipeline parallelism cuts it by layer, like a conveyor. Tensor parallelism cuts inside a layer, one matrix across cards; the exchange is so intense that it is done only inside a server over NVLink."},
+{s:"Модели",t:"KV cache",e:"кэш внимания при генерации",ee:"attention cache during generation",d:"Для каждого обработанного токена хранятся два вектора, чтобы не пересчитывать их на каждом шаге. Растёт от длины контекста и от числа одновременных запросов. Для 70B при 128K токенов — около 40 ГБ на один запрос, сопоставимо с весами. Веса при этом не растут: их размер задан числом параметров и форматом.",de:"Two vectors are kept for every token processed so they need not be recomputed at each step. It grows with context length and with the number of concurrent requests. For a 70B model at 128K tokens that is around 40 GB for a single request, comparable to the weights. The weights themselves do not grow: their size is fixed by parameter count and format."},
+{s:"Модели",t:"p99 latency",e:"99-й перцентиль",ee:"99th percentile",d:"Время, в которое укладываются 99 запросов из ста. Смотрят на него, а не на среднее, потому что среднее прячет хвост. В AI-сервисах хвост раздувают батчинг, холодный старт и разная длина входа. У LLM рядом стоит time to first token.",de:"The time within which 99 requests out of a hundred complete. Watched instead of the average because the average hides the tail. In AI services the tail is stretched by batching, cold starts and varying input length. For LLMs, time to first token sits beside it."},
+{s:"Модели",t:"training / inference",e:"две фазы",ee:"the two phases",d:"Training — модель создают, веса меняются, недели и месяцы, отказ узла останавливает прогон. Inference — готовая модель применяется, веса заморожены, запросы независимы. По объёму железа inference давно перевесил.",de:"Training — the model is built, weights change, weeks or months, and one failed node stops the run. Inference — a finished model is applied, weights frozen, requests independent. By hardware volume inference overtook training long ago."}
+];
+
+const SECT = {
+  "Вычисления":"Compute",
+  "Продукты":"Products",
+  "Сеть":"Networking",
+  "Хранилище":"Storage",
+  "Инфраструктура":"Infrastructure",
+  "Софт":"Software",
+  "Модели":"Models"
+};
+
+const UI = {
+  ru:{
+    title:"NCA-AIIO — глоссарий", tagline:"нажми на карточку, чтобы перевернуть",
+    search:"Поиск по термину или описанию", index:"указатель",
+    fuzzy:"Точных совпадений нет — показано похожее.",
+    progress:(a,b)=>a+" из "+b+" отмечено", reset:"сбросить",
+    hint:"расшифровка на обороте",
+    empty:"Ничего не нашлось. Попробуй другое слово или сними фильтр по разделу.",
+    prev:"← назад", next:"вперёд →", know:"знаю", known:"выучено",
+    random:"случайная", shuffle:"перемешать", nothing:"Ничего не нашлось.",
+    keys:'<kbd>пробел</kbd> перевернуть, <kbd>←</kbd> <kbd>→</kbd> листать, <kbd>k</kbd> отметить как выученное, <kbd>r</kbd> случайная. В поиске <kbd>Enter</kbd> открывает указатель, <kbd>Esc</kbd> сбрасывает.',
+    other:"EN", lang:"ru"
+  },
+  en:{
+    title:"NCA-AIIO glossary", tagline:"click a card to flip it",
+    search:"Search terms and descriptions", index:"index",
+    fuzzy:"No exact match — showing close results.",
+    progress:(a,b)=>a+" of "+b+" marked", reset:"reset",
+    hint:"definition on the back",
+    empty:"Nothing found. Try another word or clear the section filter.",
+    prev:"← back", next:"next →", know:"know it", known:"learned",
+    random:"random", shuffle:"shuffle", nothing:"Nothing found.",
+    keys:'<kbd>space</kbd> flip, <kbd>←</kbd> <kbd>→</kbd> browse, <kbd>k</kbd> mark as learned, <kbd>r</kbd> random. In search, <kbd>Enter</kbd> opens the index and <kbd>Esc</kbd> clears it.',
+    other:"RU", lang:"en"
+  }
+};
+
+const SECTIONS = [...new Set(DATA.map(c => c.s))];
+const KEY = "nca-aiio-known-v1";
+const LKEY = "nca-aiio-lang";
+
+let lang = "ru";
+try { const s = localStorage.getItem(LKEY); if (s === "en" || s === "ru") lang = s; } catch (e) {}
+
+let known = new Set();
+try {
+  const raw = localStorage.getItem(KEY);
+  if (raw) known = new Set(JSON.parse(raw));
+} catch (e) { /* хранилище недоступно — работаем без отметок */ }
+
+function save(){
+  try { localStorage.setItem(KEY, JSON.stringify([...known])); } catch (e) {}
+}
+
+const T = () => UI[lang];
+const sect = c => lang === "ru" ? c.s : (SECT[c.s] || c.s);
+const term = c => lang === "ru" ? c.t : (c.te || c.t);
+const expand = c => lang === "ru" ? c.e : (c.ee || c.e);
+const descr = c => lang === "ru" ? c.d : (c.de || c.d);
+
+let active = new Set(SECTIONS);
+let deck = [];
+let idx = 0;
+let flipped = false;
+let query = "";
+let fuzzy = false;
+
+const el = id => document.getElementById(id);
+const cardEl = el("card"), emptyEl = el("empty");
+
+function haystack(c){
+  return [c.t, c.te, c.e, c.ee, c.d, c.de].filter(Boolean).join(" ").toLowerCase();
+}
+
+function exact(c){ return haystack(c).includes(query.toLowerCase()); }
+
+// расстояние Дамерау — Левенштейна, с перестановкой соседних букв
+function near(a, b){
+  if (Math.abs(a.length - b.length) > 2) return 99;
+  const m = [];
+  for (let i = 0; i <= a.length; i++) m[i] = [i];
+  for (let j = 0; j <= b.length; j++) m[0][j] = j;
+  for (let i = 1; i <= a.length; i++){
+    for (let j = 1; j <= b.length; j++){
+      const cost = a[i-1] === b[j-1] ? 0 : 1;
+      m[i][j] = Math.min(m[i-1][j] + 1, m[i][j-1] + 1, m[i-1][j-1] + cost);
+      if (i > 1 && j > 1 && a[i-1] === b[j-2] && a[i-2] === b[j-1]){
+        m[i][j] = Math.min(m[i][j], m[i-2][j-2] + 1);
+      }
+    }
+  }
+  return m[a.length][b.length];
+}
+
+function approx(c){
+  const q = query.toLowerCase();
+  const limit = q.length <= 4 ? 1 : 2;
+  const names = [c.t, c.te, c.e, c.ee].filter(Boolean);
+  if (names.some(n => near(n.toLowerCase(), q) <= limit)) return true;
+  return names.join(" ").toLowerCase().split(/[\s/,—-]+/)
+    .some(w => w.length > 2 && near(w, q) <= limit);
+}
+
+function matches(c){
+  if (!active.has(c.s)) return false;
+  if (!query) return true;
+  return fuzzy ? approx(c) : exact(c);
+}
+
+function rebuild(){
+  fuzzy = false;
+  deck = DATA.filter(matches);
+  if (query && !deck.length){
+    fuzzy = true;
+    deck = DATA.filter(matches);
+  }
+  idx = 0;
+  flipped = false;
+  render();
+  if (!el("index").hidden) buildIndex();
+}
+
+function shuffle(){
+  for (let i = deck.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  idx = 0; flipped = false; render();
+}
+
+function randomCard(){
+  if (deck.length < 2) return;
+  let pool = deck.map((c, i) => i).filter(i => !known.has(deck[i].t) && i !== idx);
+  if (!pool.length) pool = deck.map((c, i) => i).filter(i => i !== idx);
+  idx = pool[Math.floor(Math.random() * pool.length)];
+  flipped = false;
+  render();
+}
+
+function paintUI(){
+  const t = T();
+  document.documentElement.lang = t.lang;
+  document.title = t.title;
+  el("h1").textContent = t.title;
+  el("tagline").textContent = t.tagline;
+  el("lang").textContent = t.other;
+  el("search").placeholder = t.search;
+  el("search").setAttribute("aria-label", t.search);
+  el("toggleIndex").textContent = t.index;
+  el("fuzzyNote").textContent = t.fuzzy;
+  el("reset").textContent = t.reset;
+  el("hint").textContent = t.hint;
+  emptyEl.textContent = t.empty;
+  el("prev").textContent = t.prev;
+  el("next").textContent = t.next;
+  el("random").textContent = t.random;
+  el("shuffle").textContent = t.shuffle;
+  el("keys").innerHTML = t.keys;
+  [...el("filters").children].forEach((b, i) => {
+    b.textContent = lang === "ru" ? SECTIONS[i] : (SECT[SECTIONS[i]] || SECTIONS[i]);
+  });
+}
+
+function buildFilters(){
+  const box = el("filters");
+  SECTIONS.forEach(s => {
+    const b = document.createElement("button");
+    b.className = "chip";
+    b.type = "button";
+    b.setAttribute("aria-pressed", "true");
+    b.addEventListener("click", () => {
+      if (active.has(s)) { if (active.size > 1) active.delete(s); else return; }
+      else active.add(s);
+      b.setAttribute("aria-pressed", active.has(s) ? "true" : "false");
+      rebuild();
+    });
+    box.appendChild(b);
+  });
+}
+
+function render(){
+  const t = T();
+  el("fuzzyNote").hidden = !(fuzzy && deck.length);
+  const inScope = DATA.filter(c => active.has(c.s));
+  const done = inScope.filter(c => known.has(c.t)).length;
+  el("progress").textContent = t.progress(done, inScope.length);
+  el("barfill").style.width = inScope.length ? (done / inScope.length * 100) + "%" : "0%";
+
+  if (!deck.length){
+    cardEl.hidden = true; emptyEl.hidden = false;
+    el("count").textContent = "";
+    return;
+  }
+  cardEl.hidden = false; emptyEl.hidden = true;
+
+  const c = deck[idx];
+  el("sect").textContent = sect(c);
+  el("term").textContent = term(c);
+  el("backterm").textContent = term(c);
+  el("expand").textContent = expand(c);
+  el("body").textContent = descr(c);
+  el("count").textContent = (idx + 1) + " / " + deck.length;
+  el("know").classList.toggle("on", known.has(c.t));
+  el("know").textContent = known.has(c.t) ? t.known : t.know;
+
+  cardEl.classList.toggle("flipped", flipped);
+}
+
+function step(n){
+  if (!deck.length) return;
+  idx = (idx + n + deck.length) % deck.length;
+  flipped = false;
+  render();
+}
+
+function toggleKnown(){
+  if (!deck.length) return;
+  const k = deck[idx].t;
+  if (known.has(k)) known.delete(k); else known.add(k);
+  save(); render();
+}
+
+function collate(a, b){
+  return term(a).localeCompare(term(b), lang === "ru" ? "ru" : "en", {sensitivity:"base", numeric:true});
+}
+
+function buildIndex(){
+  const box = el("index");
+  box.textContent = "";
+  const items = DATA.filter(matches).slice().sort(collate);
+
+  if (!items.length){
+    const p = document.createElement("p");
+    p.className = "tag";
+    p.textContent = T().nothing;
+    box.appendChild(p);
+    return;
+  }
+
+  let letter = null, list = null;
+  items.forEach(c => {
+    const first = term(c)[0].toUpperCase();
+    if (first !== letter){
+      letter = first;
+      const h = document.createElement("h2");
+      h.textContent = letter;
+      box.appendChild(h);
+      list = document.createElement("ul");
+      box.appendChild(list);
+    }
+    const li = document.createElement("li");
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = term(c);
+    if (known.has(c.t)) b.classList.add("done");
+    const tag = document.createElement("span");
+    tag.className = "tag";
+    tag.textContent = "  " + sect(c);
+    b.appendChild(tag);
+    b.addEventListener("click", () => {
+      const pos = deck.findIndex(x => x.t === c.t);
+      if (pos >= 0){ idx = pos; flipped = true; render(); }
+      showIndex(false);
+      document.querySelector(".stage").scrollIntoView({block:"start", behavior:"smooth"});
+    });
+    li.appendChild(b);
+    list.appendChild(li);
+  });
+}
+
+function showIndex(on){
+  el("index").hidden = !on;
+  document.querySelector(".stage").hidden = on;
+  document.querySelector(".controls").hidden = on;
+  el("toggleIndex").setAttribute("aria-pressed", on ? "true" : "false");
+  el("toggleIndex").classList.toggle("on", on);
+  if (on) buildIndex();
+}
+
+function setLang(next){
+  lang = next;
+  try { localStorage.setItem(LKEY, lang); } catch (e) {}
+  paintUI();
+  render();
+  if (!el("index").hidden) buildIndex();
+}
+
+el("lang").addEventListener("click", () => setLang(lang === "ru" ? "en" : "ru"));
+el("toggleIndex").addEventListener("click", () => showIndex(el("index").hidden));
+
+el("search").addEventListener("input", e => {
+  query = e.target.value.trim();
+  rebuild();
+});
+
+cardEl.addEventListener("click", () => { flipped = !flipped; render(); });
+el("next").addEventListener("click", () => step(1));
+el("prev").addEventListener("click", () => step(-1));
+el("know").addEventListener("click", toggleKnown);
+el("random").addEventListener("click", randomCard);
+el("shuffle").addEventListener("click", shuffle);
+el("reset").addEventListener("click", () => {
+  known.clear(); save(); render();
+  if (!el("index").hidden) buildIndex();
+});
+
+document.addEventListener("keydown", e => {
+  const t = e.target;
+  if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA")){
+    if (e.key === "Escape"){ t.value = ""; query = ""; rebuild(); showIndex(false); t.blur(); }
+    else if (e.key === "Enter"){
+      e.preventDefault();
+      if (deck.length === 1){ idx = 0; flipped = true; render(); showIndex(false); }
+      else if (deck.length){ showIndex(true); }
+      t.blur();
+    }
+    return;
+  }
+  if (!el("index").hidden) return;
+  if (t && t.closest("button") && e.key === " ") return;
+  if (e.key === "ArrowRight") { step(1); e.preventDefault(); }
+  else if (e.key === "ArrowLeft") { step(-1); e.preventDefault(); }
+  else if (e.key === " ") { flipped = !flipped; render(); e.preventDefault(); }
+  else if (e.key === "k" || e.key === "K" || e.key === "л" || e.key === "Л") { toggleKnown(); }
+  else if (e.key === "r" || e.key === "R" || e.key === "к" || e.key === "К") { randomCard(); }
+});
+
+buildFilters();
+paintUI();
+rebuild();
+</script>
+</body>
+</html>
