@@ -198,6 +198,7 @@
   .index h2:first-child{margin-top:0}
   .index ul{list-style:none;margin:0;padding:0;columns:2;column-gap:28px}
   @media (max-width:520px){.index ul{columns:1}}
+  .index ul.flat{columns:1}
   .index li{break-inside:avoid;margin:0 0 3px}
   .index button{
     background:none;border:0;padding:2px 0;cursor:pointer;
@@ -695,7 +696,9 @@ function collate(a, b){
 function buildIndex(){
   const box = el("index");
   box.textContent = "";
-  const items = DATA.filter(matches).slice().sort(collate);
+  const ranked = !!query && !fuzzy;
+  const items = DATA.filter(matches).slice()
+    .sort(ranked ? (a, b) => rank(a) - rank(b) || collate(a, b) : collate);
 
   if (!items.length){
     const p = document.createElement("p");
@@ -706,9 +709,14 @@ function buildIndex(){
   }
 
   let letter = null, list = null;
+  if (ranked){
+    list = document.createElement("ul");
+    list.className = "flat";
+    box.appendChild(list);
+  }
   items.forEach(c => {
     const first = term(c)[0].toUpperCase();
-    if (first !== letter){
+    if (!ranked && first !== letter){
       letter = first;
       const h = document.createElement("h2");
       h.textContent = letter;
