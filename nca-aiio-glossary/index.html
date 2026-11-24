@@ -557,6 +557,17 @@ function approx(c){
     .some(w => w.length > 2 && near(w, q) <= limit);
 }
 
+// чем ближе совпадение к названию термина, тем выше карточка
+function rank(c){
+  const q = query.toLowerCase();
+  const names = [c.t, c.te].filter(Boolean).map(s => s.toLowerCase());
+  if (names.some(n => n === q)) return 0;
+  if (names.some(n => n.split(/[\s/,()—-]+/).some(w => w.startsWith(q)))) return 1;
+  if (names.some(n => n.includes(q))) return 2;
+  if ([c.e, c.ee].filter(Boolean).some(s => s.toLowerCase().includes(q))) return 3;
+  return 4;
+}
+
 function matches(c){
   if (!active.has(c.s)) return false;
   if (!query) return true;
@@ -570,6 +581,7 @@ function rebuild(){
     fuzzy = true;
     deck = DATA.filter(matches);
   }
+  if (query && !fuzzy) deck.sort((a, b) => rank(a) - rank(b));
   idx = 0;
   flipped = false;
   render();
